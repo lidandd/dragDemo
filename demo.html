@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>拖拽</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        html,body{
+            margin: 0;
+            padding:0;
+        }
+        #obj{
+            border: 1px solid #ccc;
+            width: 220px;
+            height: 300px;
+            background: papayawhip;
+        }
+        .header{
+            height: 40px;
+            line-height: 40px;
+            cursor: move;
+            border-bottom: 1px solid #ccc;
+            background: #f3f3f3;
+            position: relative;
+        }
+        .close{
+            position: absolute;
+            top:2px;
+            right:5px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+
+            //拖拽
+            var dragEle = document.getElementById("obj");
+            var dragObj = document.getElementById("obj").children[0]; //获取拖拽元素
+
+            //鼠标的坐标x,y
+            var mouseX;
+            var mouseY;
+            //拖拽的left,top值
+            var objX;
+            var objY;
+
+            dragObj.onmousedown = function (event) {
+
+                event = event || window.event;
+                dragObj.style.position = "relative";
+                //鼠标 x,y
+                mouseX = event.clientX-dragEle.offsetLeft;
+                mouseY = event.clientY-dragEle.offsetTop;
+
+                document.onmousemove = function (event) {
+
+                    event = event || window.event;
+                    objX = event.clientX-mouseX;
+                    objY = event.clientY-mouseY;
+                    //判断拖动的位置是否在浏览器工作区域内
+                    if(objX < 0){
+                        objX = 0 ;
+                    }
+                    if(objX > getWidth() - dragEle.offsetWidth){
+                        objX = getWidth()- dragEle.offsetWidth;
+                    }
+                    if(objY < 0){
+                        objY = 0 ;
+                    }
+                    if(objY > getHeight() - dragEle.offsetHeight){
+                        objY = getHeight() - dragEle.offsetHeight;
+                    }
+
+                    dragEle.style.left = objX + "px";
+                    dragEle.style.top = objY + "px";
+
+                };
+            };
+
+            document.onmouseup = function () {
+                document.onmousemove = null;
+            };
+
+            //关闭
+            var close = document.getElementsByClassName("close");
+            close.onclick = function () {
+                document.getElementById("obj").style.display = "none";
+            };
+        }
+
+        //获取网页可视宽度
+        function getWidth(){
+            if(window.innerWidth){
+                return window.innerWidth;
+            }
+            else{
+                if(document.compatMode == "CSS1Compat"){
+                    return document.documentElement.clientWidth;
+                }
+                else{
+                    return document.body.clientWidth;
+                }
+            }
+        }
+        //获取网页可视高度
+        function getHeight(){
+            if(window.innerHeight){
+                return window.innerHeight;
+            }
+            else{
+                if(document.compatMode == "CSS1Compat"){
+                    return document.documentElement.clientHeight;
+                }
+                else{
+                    return document.body.clientHeight;
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+<div id="obj" class="dialog" style="position: relative">
+    <div class="header draggable">
+        拖拽的有效元素
+        <div class="close">X</div>
+    </div>
+    <div class="content">
+        拖拽对象
+    </div>
+</div>
+
+</body>
+</html>
